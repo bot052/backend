@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello, EJS</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/main.js"></script>
+</head>
+
+<body>
+  <!-- localhost:4000/ -->
+  <a href="/">홈으로</a>
+  <h1>회원목록</h1>
+  <h2>총 회원 수 <%= userCounts %></h2>
+  <ul>
+    <% if (userCounts > 0) { %>
+    <% for(let i = 0; i < userCounts; i++) { %>
+    <li>
+      <p>
+        ID: <%= USER[i].id %></p>
+      <p>
+        이름: <%= USER[i].name %>
+      </p>
+      <p>
+        이메일: <%= USER[i].email %>
+      </p>
+      <a href="#" onclick="deleteUser('<%= USER[i].id %>');">삭제하기</a>
+    </li>
+    <% } %>
+    <% } else { %>
+    <li>회원 정보가 없습니다!</li>
+    <% } %>
+  </ul>
+  <!-- 회원 가입 폼 -->
+  <!-- 옛날 폼으로 get, post 방식만 가능 -->
+  <form action="/users" method="POST">
+    <div>
+      <label>아이디</label>
+      <input type="text" name="id" />
+    </div>
+    <div>
+      <label>이름</label>
+      <input type="text" name="name" />
+    </div>
+    <div>
+      <label>이메일</label>
+      <input type="email" name="email" />
+    </div>
+    <button type="submit">회원등록</button>
+  </form>
+</body>
+<script>
+  async function deleteUser(userID) {
+    const res = await fetch(`http://localhost:4000/users/${userID}`, {
+      method: 'delete',
+      headers: {
+        'Content-type': 'application/json'
+      }
+    })
+
+    if (res.status === 200) {
+      location.reload();
+    } else {
+      console.log('통신 이상');
+    }
+  }
+</script>
+
+</html>

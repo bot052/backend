@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>J borad</title>
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #eee;
+    }
+
+    ul,
+    ol {
+      list-style: none;
+      padding: 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .btn {
+      padding: 5px 10px;
+      border-radius: 10px;
+      margin: 0 5px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .btn.orange {
+      background-color: orange;
+    }
+
+    .btn.blue {
+      background-color: dodgerblue;
+    }
+
+    .btn.red {
+      background-color: coral;
+    }
+
+    .inner {
+      position: absolute;
+      width: 1200px;
+      height: 100vh;
+      left: 0;
+      right: 0;
+      margin: auto;
+      padding: 50px;
+    }
+
+    .inner .board_container {}
+
+    .inner .board_container .board_header {
+      text-align: center;
+    }
+
+    .inner .board_container .board_write {
+      margin-top: 30px;
+      text-align: right;
+    }
+
+    .inner .board_container .board_write span {
+      margin-right: 30px;
+      font-weight: bold;
+    }
+
+    .inner .board_container .board_body {
+      width: 100%;
+      margin-top: 50px;
+    }
+
+    .inner .board_container .board_body .board {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .inner .board_container .board_body .board li {
+      width: 100%;
+      border-radius: 30px;
+      border: 1px solid #999;
+      background-color: #fff;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .inner .board_container .board_body .board li div {
+      margin: 20px 30px;
+    }
+
+    .inner .board_container .board_body .board li .author {
+      font-size: 20px;
+    }
+
+    .inner .board_container .board_body .board li .title {
+      font-size: 28px;
+    }
+
+    .inner .board_container .board_body .board li .content {
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="inner">
+    <div class="board_container">
+      <div class="board_header">
+        <h1>J Board</h1>
+      </div>
+      <div class="board_write">
+        <span>현재 등록 글 : &nbsp; <%= articleCounts %></span>
+        <a class="btn red" href="/dbBoard/write">글쓰기</a>
+        <a class="btn orange" href="/login/logout">로그아웃</a>
+      </div>
+      <div class="board_body">
+        <ul class="board">
+          <% if (articleCounts> 0) { %>
+          <% for(let i=0; i < articleCounts; i++) { %>
+          <li>
+            <div class="author">
+              작성자 : <%= ARTICLE[i].USERID %>
+            </div>
+            <div class="title">
+              <%= ARTICLE[i].TITLE %>
+            </div>
+            <div class="content">
+              <%= ARTICLE[i].CONTENT %>
+            </div>
+            <div class="foot">
+              <% if (ARTICLE[i].USERID === userId) { %>
+              <a class="btn orange" href="dbBoard/modify/<%= ARTICLE[i]._id %>">수정</a>
+              <a class="btn blue" href="#" onclick="deleteArticle('<%= ARTICLE[i]._id %>')">삭제</a>
+              <% } %>
+            </div>
+          </li>
+          <% } %>
+          <% } else { %>
+          <li>
+            <div class="title">글이 없습니다!</div>
+            <% } %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+
+<script>
+  function deleteArticle(id) {
+    fetch(`dbBoard/delete/${id}`, {
+      method: 'delete',
+      headers: {
+        'Content-type': 'application/json'
+      },
+    }).then((res) => {
+      location.href = '/dbBoard'; // 삭제 일어난 후 페이지 /dbBoard로 새로고침 이동
+    })
+  }
+</script>
+
+
+</html>
